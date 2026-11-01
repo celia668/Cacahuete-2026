@@ -1,0 +1,190 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Cacahuète 🥜 Family Draw</title>
+<style>
+:root{--bg1:#ffe9e1;--bg2:#fff4d6;--card:#ffffffd9;--text:#4a2c2a;--muted:#8d6e63;--accent:#e8643c;--accent2:#f7b538;--line:#f0d5c4;--inp:#fff;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){--bg1:#2b1b1a;--bg2:#2a2418;--card:#3a2a28d9;--text:#fbe9e0;--muted:#cfae9f;--accent:#ff8a5c;--accent2:#f7b538;--line:#5a423d;--inp:#2b1d1b;color-scheme:dark}}
+:root[data-theme="dark"]{--bg1:#2b1b1a;--bg2:#2a2418;--card:#3a2a28d9;--text:#fbe9e0;--muted:#cfae9f;--accent:#ff8a5c;--accent2:#f7b538;--line:#5a423d;--inp:#2b1d1b;color-scheme:dark}
+*{box-sizing:border-box}
+html{scroll-padding-top:env(safe-area-inset-top,0px)}
+body{margin:0;min-height:100vh;background:linear-gradient(160deg,var(--bg1),var(--bg2));color:var(--text);font-family:"Nunito","Trebuchet MS",system-ui,sans-serif;line-height:1.45}
+main{max-width:480px;margin:0 auto;padding:22px 16px 48px;position:relative}
+.hero{text-align:center;margin-bottom:18px}
+.peanut{font-size:3.2rem;display:inline-block;animation:bob 2.4s ease-in-out infinite}
+@keyframes bob{50%{transform:translateY(-8px) rotate(6deg)}}
+h1{font-family:"Pacifico","Brush Script MT",cursive;font-weight:400;font-size:2rem;margin:4px 0;color:var(--accent)}
+.sub{color:var(--muted);margin:0}
+.card{background:var(--card);border:2px dashed var(--line);border-radius:20px;padding:16px;margin-bottom:14px;backdrop-filter:blur(4px)}
+h2{font-size:1.05rem;margin:0 0 10px}
+label{font-weight:700;font-size:.9rem;display:block;margin:8px 0 4px}
+input,select{width:100%;font:inherit;color:var(--text);background:var(--inp);border:1.5px solid var(--line);border-radius:12px;padding:10px}
+.row{display:grid;grid-template-columns:1.3fr 1fr 1.1fr auto;gap:6px;margin-bottom:6px;align-items:center}
+.row input{padding:8px;font-size:.9rem}
+.x{background:none;border:0;font-size:1.1rem;padding:4px;width:auto;margin:0;color:var(--muted)}
+.head{font-size:.75rem;color:var(--muted);font-weight:700}
+button{width:100%;font:inherit;font-weight:800;color:#fff;background:linear-gradient(135deg,var(--accent),var(--accent2));border:0;border-radius:16px;padding:13px;margin-top:10px;box-shadow:0 4px 0 #0002}
+button.ghost{background:transparent;color:var(--accent);border:2px solid var(--accent);box-shadow:none}
+.status{margin-top:8px;font-weight:700;font-size:.9rem}
+.ok{color:#2e9e5b}.bad{color:#d33}
+.hint{color:var(--muted);font-size:.82rem;margin-top:6px}
+#res{text-align:center;display:none}
+.gift{font-size:3rem;animation:bob 1s infinite}
+.big{font-family:"Pacifico","Brush Script MT",cursive;font-size:2.2rem;color:var(--accent);margin:6px 0}
+.grid{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin-top:10px}
+.cd{perspective:700px;aspect-ratio:3/4;cursor:pointer}
+.cd .in{position:relative;width:100%;height:100%;transition:transform .9s cubic-bezier(.3,1.3,.5,1);transform-style:preserve-3d}
+.cd.flip .in{transform:rotateY(180deg)}.cd.now .in{transition:none}
+.cd .bk,.cd .fr{position:absolute;inset:0;border-radius:14px;backface-visibility:hidden;-webkit-backface-visibility:hidden;display:flex;align-items:center;justify-content:center;text-align:center;padding:6px}
+.cd .bk{background:repeating-linear-gradient(45deg,#ff9ebd,#ff9ebd 8px,#ffb3cc 8px,#ffb3cc 16px);color:#fff;font-size:2rem;font-weight:800;border:3px solid #fff;box-shadow:0 4px 10px #0003;text-shadow:0 2px 0 #d6457a}
+.cd .fr{background:#fff;color:#4a2c2a;transform:rotateY(180deg);border:3px solid #ff9ebd;font-family:"Pacifico","Brush Script MT",cursive;font-size:1.25rem;box-shadow:0 4px 10px #0003}
+.cd:active .in{transform:scale(.96)}.cd.flip:active .in{transform:rotateY(180deg)}
+.grid.done .cd:not(.flip){opacity:.35;cursor:not-allowed;filter:grayscale(.4)}.grid.done .cd{cursor:default}
+.conf{position:fixed;top:-30px;font-size:1.4rem;pointer-events:none;animation:fall 2.8s linear forwards;z-index:9}
+@keyframes fall{to{transform:translateY(110vh) rotate(360deg);opacity:.2}}
+</style>
+</head>
+<body>
+<main>
+<div class="hero"><div class="peanut">🥜</div><h1 id="ttl"></h1><p class="sub" id="evt"></p></div>
+<div id="app"></div>
+</main>
+<script type="application/json" id="data">{"title": "Cacahuète Family Draw", "event": "We meet on New Year’s Eve 🎆", "sameCat": true, "seed": "peanut", "members": [{"name": "Celia", "fam": "Ndayisaba", "cat": ""}, {"name": "Jesse", "fam": "Ndayisaba", "cat": ""}, {"name": "Akeelah", "fam": "Ndayisaba", "cat": ""}, {"name": "Nolan", "fam": "Gaston", "cat": ""}, {"name": "Milka", "fam": "Gaston", "cat": ""}, {"name": "Landry", "fam": "Gaston", "cat": ""}]}</script>
+<script>
+var S=JSON.parse(document.getElementById('data').textContent),owner=false,app=document.getElementById('app'),stage='name',curMe=null,mem=null,busy=false;
+var CATS={elder:'👵 Elder',parent:'👨‍👩‍👧 Parent',youth:'🧑 Youth',teen:'🧒 Teen',baby:'👶 Baby'};
+function esc(s){return String(s==null?'':s).replace(/[&<>"]/g,function(c){return{'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c];});}
+function hs(s){var h=1779033703^s.length;for(var i=0;i<s.length;i++){h=Math.imul(h^s.charCodeAt(i),3432918353);h=(h<<13)|(h>>>19);}return h>>>0;}
+function rng(a){return function(){a=(a+0x6D2B79F5)|0;var t=Math.imul(a^a>>>15,1|a);t=(t+Math.imul(t^t>>>7,61|t))^t;return((t^t>>>14)>>>0)/4294967296;};}
+function shuf(a,r){for(var i=a.length-1;i>0;i--){var j=Math.floor(r()*(i+1)),t=a[i];a[i]=a[j];a[j]=t;}return a;}
+function ok(a,b){
+  if(a===b)return false;
+  var fa=(a.fam||'').trim().toLowerCase(),fb=(b.fam||'').trim().toLowerCase();
+  if(fa&&fa===fb)return false;
+  if(S.sameCat&&a.cat&&a.cat===b.cat)return false;
+  return true;
+}
+function draw(){
+  var m=S.members,n=m.length;if(n<3)return null;
+  var r=rng(hs(JSON.stringify([S.seed,S.sameCat,m])));
+  var cands=m.map(function(a){var c=[];m.forEach(function(b,j){if(ok(a,b))c.push(j);});return shuf(c,r);});
+  var order=shuf(m.map(function(_,i){return i;}),r).sort(function(x,y){return cands[x].length-cands[y].length;});
+  var used={},res={},steps=0;
+  function go(k){
+    if(k===n)return true;var g=order[k],c=cands[g];
+    for(var q=0;q<c.length;q++){
+      if(used[c[q]])continue;if(++steps>60000)return false;
+      used[c[q]]=1;res[g]=c[q];if(go(k+1))return true;used[c[q]]=0;
+    }
+    return false;
+  }
+  return go(0)?res:null;
+}
+function KEY(){return 'cac_'+hs(JSON.stringify([S.seed,S.sameCat,S.members]));}
+function getPick(){try{var v=localStorage.getItem(KEY());if(v)return JSON.parse(v);}catch(e){}return mem;}
+function setPick(p){mem=p;try{localStorage.setItem(KEY(),JSON.stringify(p));}catch(e){}}
+function head(){document.getElementById('ttl').textContent=S.title;document.getElementById('evt').textContent=S.event;}
+function cards(flipIdx,name,done){
+  var h='<div class="grid'+(done?' done':'')+'">';
+  for(var k=1;k<=S.members.length;k++){
+    var f=k===flipIdx;
+    h+='<div class="cd'+(f?' flip now':'')+'" data-c="'+k+'"><div class="in"><div class="bk">'+k+'</div><div class="fr">'+(f?esc(name):'')+'</div></div></div>';
+  }
+  return h+'</div>';
+}
+function gview(){
+  var g=document.getElementById('gx');if(!g)return;
+  if(!S.members.length){g.innerHTML='<div class="card"><p class="hint">The organizer hasn’t added the family yet. Come back soon! 🥜</p></div>';return;}
+  var p=getPick();
+  if(p){
+    g.innerHTML='<div class="card"><h2>Hi '+esc(S.members[p.me].name)+' 💌</h2><div class="hint" style="margin:0">Your choice is final — this is who you’re spoiling. Shhh, keep it secret! 🤫</div>'+cards(p.card,S.members[p.to].name,true)+'</div>';
+    return;
+  }
+  if(stage==='name'||curMe==null){
+    var o='<option value="">— who are you? —</option>';
+    S.members.forEach(function(m,i){o+='<option value="'+i+'">'+esc(m.name)+'</option>';});
+    g.innerHTML='<div class="card"><h2>🎁 Who are you?</h2><select id="me">'+o+'</select><button id="cont">Show me the cards 🃏</button><div class="status bad" id="gerr"></div><div class="hint">Once you flip a card, your choice is locked.</div></div>';
+  }else{
+    g.innerHTML='<div class="card"><h2>Hi '+esc(S.members[curMe].name)+'! Pick one card ✨</h2><div class="hint" style="margin:0">Choose wisely — you only get one flip and can’t change it.</div>'+cards(0,'',false)+'<button class="ghost" id="back">← That’s not me</button></div>';
+  }
+}
+function setup(){
+  var rows=S.members.map(function(m,i){
+    var o='<option value="">Group?</option>';for(var k in CATS)o+='<option value="'+k+'"'+(m.cat===k?' selected':'')+'>'+CATS[k]+'</option>';
+    return '<div class="row"><input data-i="'+i+'" data-k="name" value="'+esc(m.name)+'" placeholder="Name"><input data-i="'+i+'" data-k="fam" value="'+esc(m.fam)+'" placeholder="Family"><select data-i="'+i+'" data-k="cat">'+o+'</select><button class="x" data-del="'+i+'">✕</button></div>';
+  }).join('');
+  return '<div class="card" id="setup"><h2>🛠️ Organizer setup <span class="hint">(only you see this)</span></h2>'+
+    '<label>Title</label><input id="t" value="'+esc(S.title)+'">'+
+    '<label>Subtitle / date</label><input id="e" value="'+esc(S.event)+'">'+
+    '<label>People</label><div class="row head"><span>Name</span><span>Family</span><span>Group</span><span></span></div>'+rows+
+    '<button class="ghost" id="add">+ Add a person</button>'+
+    '<label style="display:flex;gap:8px;align-items:center"><input id="sc" type="checkbox" style="width:auto"'+(S.sameCat?' checked':'')+'> Never match two people from the same group</label>'+
+    '<div class="hint">Same “Family” text (e.g. Ndayisaba) = never matched together, so siblings and parents stay apart.</div>'+
+    '<div class="status" id="st"></div>'+
+    '<button id="save">Save &amp; update the link 💾</button><button class="ghost" id="shuf">New random draw 🔀</button><button class="ghost" id="clr">Clear my pick on this device (testing)</button>'+
+    '<div class="hint">Finish setup before sharing: changing people or rules changes the draw.</div></div>';
+}
+function status(){
+  var el=document.getElementById('st');if(!el)return;
+  if(S.members.length<3){el.className='status bad';el.textContent='Add at least 3 people.';return;}
+  var d=draw();el.className='status '+(d?'ok':'bad');
+  el.textContent=d?'✅ A valid draw exists with these rules.':'⚠️ No valid draw — merge some family names or turn off the group rule.';
+}
+function render(){head();app.innerHTML=(owner?setup():'')+'<div id="gx"></div>';status();gview();}
+function confetti(){
+  var e=['🥜','🎉','✨','🎁','❄️','⭐'];
+  for(var i=0;i<26;i++){var s=document.createElement('span');s.className='conf';s.textContent=e[i%e.length];s.style.left=Math.random()*100+'vw';s.style.animationDelay=Math.random()*0.8+'s';document.body.appendChild(s);setTimeout(function(x){x.remove();},4000,s);}
+}
+app.addEventListener('input',function(ev){
+  var t=ev.target;
+  if(t.dataset&&t.dataset.k){var m=S.members[+t.dataset.i];m[t.dataset.k]=t.value;status();}
+  else if(t.id==='t'){S.title=t.value;head();}
+  else if(t.id==='e'){S.event=t.value;head();}
+  else if(t.id==='sc'){S.sameCat=t.checked;status();}
+});
+app.addEventListener('click',function(ev){
+  var t=ev.target,cd=t.closest&&t.closest('.cd');
+  if(cd&&!getPick()&&curMe!=null&&!busy){
+    var d=draw(),g=document.getElementById('gx');
+    if(!d){alert('The draw isn’t ready yet. Ask the organizer.');return;}
+    busy=true;var to=d[curMe],k=+cd.dataset.c;
+    setPick({me:curMe,card:k,to:to});
+    cd.querySelector('.fr').textContent=S.members[to].name;
+    g.querySelector('.grid').classList.add('done');
+    requestAnimationFrame(function(){cd.classList.add('flip');});
+    setTimeout(confetti,500);
+    return;
+  }
+  if(t.dataset&&t.dataset.del!==undefined){S.members.splice(+t.dataset.del,1);render();}
+  else if(t.id==='add'){S.members.push({name:'',fam:'',cat:''});render();}
+  else if(t.id==='shuf'){S.seed=Math.random().toString(36).slice(2,8);status();}
+  else if(t.id==='save'){save();}
+  else if(t.id==='clr'){mem=null;try{localStorage.removeItem(KEY());}catch(e){}stage='name';curMe=null;busy=false;gview();}
+  else if(t.id==='cont'){
+    var v=document.getElementById('me').value;
+    if(v===''){document.getElementById('gerr').textContent='Choose your name first.';return;}
+    curMe=+v;stage='cards';gview();
+  }
+  else if(t.id==='back'){curMe=null;stage='name';gview();}
+});
+async function save(){
+  var st=document.getElementById('st');
+  S.members=S.members.filter(function(m){return m.name&&m.name.trim();});
+  try{
+    var a=await claude.use('artifact');
+    if(!a){st.className='status bad';st.textContent='Saving isn’t available here.';return;}
+    var c=document.documentElement.cloneNode(true);
+    c.querySelector('#app').innerHTML='';
+    c.querySelector('#data').textContent=JSON.stringify(S).replace(/</g,'\\u003c');
+    await a.publish('<!DOCTYPE html>\n'+c.outerHTML);
+  }catch(e){st.className='status bad';st.textContent='Couldn’t save: '+(e&&e.code||'error');}
+}
+render();
+(async function(){
+  try{var u=await claude.use('user');if(u&&u.isOwner()){owner=true;render();}}catch(e){}
+})();
+</script>
+</body>
+</html>
